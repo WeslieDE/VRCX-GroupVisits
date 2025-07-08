@@ -8,6 +8,7 @@ import {
     groupRequest
 } from '../api';
 import $utils from './utils';
+import database from '../service/database.js';
 
 export default class extends baseClass {
     constructor(_app, _API, _t) {
@@ -507,7 +508,9 @@ export default class extends baseClass {
                 value: 'joinedAt:desc'
             },
             postsSearch: '',
-            galleries: {}
+            galleries: {},
+            lastVisit: '',
+            joinCount: 0
         },
         inviteGroupDialog: {
             visible: false,
@@ -776,6 +779,26 @@ export default class extends baseClass {
             D.galleries = {};
             D.members = [];
             D.memberFilter = this.groupDialogFilterOptions.everyone;
+            D.lastVisit = '';
+            D.joinCount = 0;
+            database.getGroupLastVisit({
+                groupId,
+                id: API.currentUser.id,
+                displayName: API.currentUser.displayName
+            }).then((ref) => {
+                if (ref.groupId === D.id) {
+                    D.lastVisit = ref.created_at;
+                }
+            });
+            database.getGroupJoinCount({
+                groupId,
+                id: API.currentUser.id,
+                displayName: API.currentUser.displayName
+            }).then((ref) => {
+                if (ref.groupId === D.id) {
+                    D.joinCount = ref.joinCount;
+                }
+            });
             API.getCachedGroup({
                 groupId
             })

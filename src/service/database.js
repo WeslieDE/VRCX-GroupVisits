@@ -2097,6 +2097,88 @@ class Database {
         return data;
     }
 
+    async getpreviousInstancesByGroupId(input) {
+        var data = new Map();
+        await sqliteService.execute(
+            (dbRow) => {
+                var time = 0;
+                if (dbRow[2]) {
+                    time = dbRow[2];
+                }
+                var ref = data.get(dbRow[1]);
+                if (typeof ref !== 'undefined') {
+                    time += ref.time;
+                }
+                var row = {
+                    created_at: dbRow[0],
+                    location: dbRow[1],
+                    time,
+                    worldName: dbRow[3],
+                    groupName: dbRow[4]
+                };
+                data.set(row.location, row);
+            },
+            `SELECT created_at, location, time, world_name, group_name
+            FROM gamelog_location
+            WHERE location LIKE @pattern
+            ORDER BY id DESC`,
+            {
+                '@pattern': '%~group(' + input.id + ')%'
+            }
+        );
+        return data;
+    }
+
+    async getGroupLastVisit(input) {
+        var ref = {
+            created_at: '',
+            groupId: input.groupId
+        };
+        await sqliteService.execute(
+            (row) => {
+                ref = {
+                    created_at: row[0],
+                    groupId: input.groupId
+                };
+            },
+            `SELECT created_at FROM gamelog_join_leave
+            WHERE (user_id = @userId OR display_name = @displayName)
+            AND location LIKE @pattern
+            ORDER BY id DESC LIMIT 1`,
+            {
+                '@userId': input.id,
+                '@displayName': input.displayName,
+                '@pattern': '%~group(' + input.groupId + ')%'
+            }
+        );
+        return ref;
+    }
+
+    async getGroupJoinCount(input) {
+        var ref = {
+            joinCount: 0,
+            groupId: input.groupId
+        };
+        await sqliteService.execute(
+            (row) => {
+                ref = {
+                    joinCount: row[0],
+                    groupId: input.groupId
+                };
+            },
+            `SELECT COUNT(DISTINCT location) FROM gamelog_join_leave
+            WHERE (type = 'OnPlayerJoined')
+            AND (user_id = @userId OR display_name = @displayName)
+            AND location LIKE @pattern`,
+            {
+                '@userId': input.id,
+                '@displayName': input.displayName,
+                '@pattern': '%~group(' + input.groupId + ')%'
+            }
+        );
+        return ref;
+    }
+
     deleteGameLogInstanceByInstanceId(input) {
         sqliteService.executeNonQuery(
             `DELETE FROM gamelog_location WHERE location = @location`,

@@ -1055,6 +1055,8 @@
                 "rules": "Rules",
                 "members": "Members",
                 "created_at": "Created At",
+                "last_visited": "Last Visited",
+                "join_count": "Join Count",
                 "links": "Links",
                 "url": "Group URL",
                 "url_tooltip": "Copy URL to clipboard",

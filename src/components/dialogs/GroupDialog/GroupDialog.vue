@@ -598,6 +598,35 @@
                         </div>
                         <div class="x-friend-item" style="cursor: default">
                             <div class="detail">
+                                <span class="name">{{ t('dialog.group.info.last_visited') }}</span>
+                                <span class="extra">
+                                    {{ groupDialog.lastVisit ? (groupDialog.lastVisit | formatDate('long')) : '-' }}
+                                    <span v-if="groupDialog.lastVisit"> ({{ daysSince(groupDialog.lastVisit) }}) </span>
+                                </span>
+                            </div>
+                        </div>
+                        <el-tooltip
+                            :disabled="hideTooltips"
+                            placement="top"
+                            :content="$t('dialog.user.info.open_previouse_instance')">
+                            <div class="x-friend-item" @click="showPreviousInstancesGroupDialog(groupDialog.ref)">
+                                <div class="detail">
+                                    <span class="name">
+                                        {{ t('dialog.group.info.join_count') }}
+                                        <el-tooltip
+                                            v-if="!hideTooltips"
+                                            placement="top"
+                                            style="margin-left: 5px"
+                                            :content="$t('dialog.world.info.accuracy_notice')">
+                                            <i class="el-icon-warning"></i>
+                                        </el-tooltip>
+                                    </span>
+                                    <span class="extra">{{ groupDialog.joinCount }}</span>
+                                </div>
+                            </div>
+                        </el-tooltip>
+                        <div class="x-friend-item" style="cursor: default">
+                            <div class="detail">
                                 <span class="name">{{ t('dialog.group.info.links') }}</span>
                                 <div
                                     v-if="groupDialog.ref.links && groupDialog.ref.links.length > 0"
@@ -1167,6 +1196,9 @@
             :online-friends="onlineFriends"
             :offline-friends="offlineFriends"
             :active-friends="activeFriends" />
+        <PreviousInstancesGroupDialog
+            :previous-instances-group-dialog.sync="previousInstancesGroupDialog"
+            :shift-held="shiftHeld" />
     </safe-dialog>
 </template>
 
@@ -1184,6 +1216,7 @@
     import InviteGroupDialog from '../InviteGroupDialog.vue';
     import GroupMemberModerationDialog from './GroupMemberModerationDialog.vue';
     import GroupPostEditDialog from './GroupPostEditDialog.vue';
+    import PreviousInstancesGroupDialog from '../PreviousInstancesDialog/PreviousInstancesGroupDialog.vue';
 
     const API = inject('API');
     const showFullscreenImageDialog = inject('showFullscreenImageDialog');
@@ -1293,6 +1326,12 @@
         userObject: {}
     });
 
+    const previousInstancesGroupDialog = ref({
+        visible: false,
+        openFlg: false,
+        groupRef: {}
+    });
+
     let loadMoreGroupMembersParams = {};
 
     watch(
@@ -1322,6 +1361,14 @@
         D.userId = userId;
         D.userObject = {};
         D.visible = true;
+    }
+
+    function showPreviousInstancesGroupDialog(groupRef) {
+        const D = previousInstancesGroupDialog.value;
+        D.groupRef = groupRef;
+        D.visible = true;
+        D.openFlg = true;
+        nextTick(() => (D.openFlg = false));
     }
 
     function setGroupRepresentation(groupId) {
@@ -1785,5 +1832,10 @@
     }
     function updateGroupPostSearch() {
         emit('updateGroupPostSearch');
+    }
+
+    function daysSince(date) {
+        if (!date) return '';
+        return Math.floor((Date.now() - Date.parse(date)) / 86400000);
     }
 </script>
