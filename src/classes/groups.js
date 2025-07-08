@@ -7,6 +7,7 @@ import {
     instanceRequest,
     groupRequest
 } from '../api';
+import database from '../service/database.js';
 import $utils from './utils';
 
 export default class extends baseClass {
@@ -497,6 +498,7 @@ export default class extends baseClass {
             memberSearch: '',
             memberSearchResults: [],
             instances: [],
+            lastVisit: '',
             memberRoles: [],
             memberFilter: {
                 name: $t('dialog.group.members.filters.everyone'),
@@ -770,6 +772,7 @@ export default class extends baseClass {
             D.posts = [];
             D.postsFiltered = [];
             D.instances = [];
+            D.lastVisit = '';
             D.memberRoles = [];
             D.memberSearch = '';
             D.memberSearchResults = [];
@@ -793,6 +796,11 @@ export default class extends baseClass {
                         D.loading = false;
                         D.ref = args.ref;
                         D.inGroup = args.ref.membershipStatus === 'member';
+                        database.getLastGroupInstance(args.ref.name).then((r) => {
+                            if (D.id === groupId) {
+                                D.lastVisit = r.created_at;
+                            }
+                        });
                         D.ownerDisplayName = args.ref.ownerId;
                         userRequest
                             .getCachedUser({

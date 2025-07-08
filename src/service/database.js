@@ -2097,6 +2097,58 @@ class Database {
         return data;
     }
 
+    async getpreviousInstancesByGroupName(input) {
+        var data = new Map();
+        await sqliteService.execute(
+            (dbRow) => {
+                var time = 0;
+                if (dbRow[2]) {
+                    time = dbRow[2];
+                }
+                var ref = data.get(dbRow[1]);
+                if (typeof ref !== 'undefined') {
+                    time += ref.time;
+                }
+                var row = {
+                    created_at: dbRow[0],
+                    location: dbRow[1],
+                    time,
+                    worldName: dbRow[3],
+                    groupName: dbRow[4]
+                };
+                data.set(row.location, row);
+            },
+            `SELECT created_at, location, time, world_name, group_name
+            FROM gamelog_location
+            WHERE group_name = @groupName
+            ORDER BY id DESC`,
+            {
+                '@groupName': input.name
+            }
+        );
+        return data;
+    }
+
+    async getLastGroupInstance(groupName) {
+        var ref = {
+            created_at: '',
+            groupName
+        };
+        await sqliteService.execute(
+            (row) => {
+                ref = {
+                    created_at: row[0],
+                    groupName
+                };
+            },
+            `SELECT created_at FROM gamelog_location WHERE group_name = @groupName ORDER BY id DESC LIMIT 1`,
+            {
+                '@groupName': groupName
+            }
+        );
+        return ref;
+    }
+
     deleteGameLogInstanceByInstanceId(input) {
         sqliteService.executeNonQuery(
             `DELETE FROM gamelog_location WHERE location = @location`,
