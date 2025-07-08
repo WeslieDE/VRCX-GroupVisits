@@ -51,6 +51,9 @@
     <SelfContained Condition="'$(SelfContained)' == ''">false</SelfContained>
   </PropertyGroup>
   <PropertyGroup>
+    <RuntimeFrameworkVersion>9.0.6</RuntimeFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>

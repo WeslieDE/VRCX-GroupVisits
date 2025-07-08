@@ -596,6 +596,17 @@
                                 <span class="extra">{{ groupDialog.ref.createdAt | formatDate('long') }}</span>
                             </div>
                         </div>
+                        <div class="x-friend-item x-link" @click="showPreviousInstancesGroupDialog(groupDialog.ref)">
+                            <div class="detail">
+                                <span class="name">{{ t('dialog.group.info.last_visited') }}</span>
+                                <span class="extra">
+                                    <template v-if="groupDialog.lastVisit">
+                                        {{ groupDialog.lastVisit | formatDate('long') }} ({{ daysSinceLastVisit }})
+                                    </template>
+                                    <template v-else>-</template>
+                                </span>
+                            </div>
+                        </div>
                         <div class="x-friend-item" style="cursor: default">
                             <div class="detail">
                                 <span class="name">{{ t('dialog.group.info.links') }}</span>
@@ -1167,11 +1178,13 @@
             :online-friends="onlineFriends"
             :offline-friends="offlineFriends"
             :active-friends="activeFriends" />
+        <PreviousInstancesGroupDialog
+            :previous-instances-group-dialog.sync="previousInstancesGroupDialog" />
     </safe-dialog>
 </template>
 
 <script setup>
-    import { getCurrentInstance, inject, nextTick, reactive, ref, watch } from 'vue';
+    import { getCurrentInstance, inject, nextTick, reactive, ref, watch, computed } from 'vue';
     import { useI18n } from 'vue-i18n-bridge';
     import * as workerTimers from 'worker-timers';
     import { groupRequest } from '../../../api';
@@ -1184,6 +1197,7 @@
     import InviteGroupDialog from '../InviteGroupDialog.vue';
     import GroupMemberModerationDialog from './GroupMemberModerationDialog.vue';
     import GroupPostEditDialog from './GroupPostEditDialog.vue';
+    import PreviousInstancesGroupDialog from '../PreviousInstancesDialog/PreviousInstancesGroupDialog.vue';
 
     const API = inject('API');
     const showFullscreenImageDialog = inject('showFullscreenImageDialog');
@@ -1253,6 +1267,7 @@
     ]);
 
     const groupDialogRef = ref(null);
+    const previousInstancesGroupDialogRef = ref(null);
     const isGroupMembersDone = ref(false);
     const isGroupMembersLoading = ref(false);
     const groupMembersSearchTimer = ref(null);
@@ -1293,6 +1308,18 @@
         userObject: {}
     });
 
+    const previousInstancesGroupDialog = reactive({
+        visible: false,
+        openFlg: false,
+        groupRef: {}
+    });
+
+    const daysSinceLastVisit = computed(() => {
+        if (!props.groupDialog.lastVisit) return '';
+        const diff = Math.floor((Date.now() - Date.parse(props.groupDialog.lastVisit)) / 86400000);
+        return diff + 'd';
+    });
+
     let loadMoreGroupMembersParams = {};
 
     watch(
@@ -1312,6 +1339,7 @@
             }
         }
     );
+
 
     function showInviteGroupDialog(groupId, userId) {
         const D = inviteGroupDialog.value;
@@ -1782,6 +1810,14 @@
     }
     function getGroupDialogGroup(groupId) {
         emit('getGroupDialogGroup', groupId);
+    }
+
+    function showPreviousInstancesGroupDialog(groupRef) {
+        const D = previousInstancesGroupDialog;
+        D.groupRef = groupRef;
+        D.visible = true;
+        D.openFlg = true;
+        nextTick(() => (D.openFlg = false));
     }
     function updateGroupPostSearch() {
         emit('updateGroupPostSearch');

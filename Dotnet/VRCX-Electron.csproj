@@ -51,6 +51,9 @@
     <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-x64</RuntimeIdentifier>
     <SelfContained Condition="'$(SelfContained)' == ''">false</SelfContained>
   </PropertyGroup>
+  <PropertyGroup>
+    <RuntimeFrameworkVersion>9.0.6</RuntimeFrameworkVersion>
+  </PropertyGroup>
 
   <PropertyGroup>
     <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
