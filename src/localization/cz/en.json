@@ -796,7 +796,6 @@
                 "time_in_labs": "Time In Labs:",
                 "version": "Version",
                 "platform": "Platform",
-                "last_visited": "Last Visited",
                 "visit_count": "Visit Count",
                 "time_spent": "Time Spent",
                 "accuracy_notice": "Info from local database may not be accurate"
@@ -1410,7 +1409,7 @@
             "joined_at": "Joined At",
             "banned_at": "Banned At",
             "created_at": "Created At",
-                "last_visited": "Last Visited",
+            "last_visited": "Last Visited",
             "type": "Type",
             "description": "Description",
             "data": "Data",
