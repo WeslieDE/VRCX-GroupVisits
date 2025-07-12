@@ -961,6 +961,7 @@
                 "change_description": "Изменить описание",
                 "change_content_tags": "Изменить теги содержимого",
                 "change_image": "Изменить изображение",
+                "set_local_image": "Set Local Image",
                 "download_package": "Скачать пакет Unity",
                 "delete": "Удалить",
                 "delete_impostor": "Удалить импостора",

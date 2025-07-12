@@ -330,6 +330,9 @@
                                     <el-dropdown-item icon="el-icon-picture-outline" command="Change Image">{{
                                         t('dialog.avatar.actions.change_image')
                                     }}</el-dropdown-item>
+                                    <el-dropdown-item icon="el-icon-picture-outline" command="Set Local Image">{{
+                                        t('dialog.avatar.actions.set_local_image')
+                                    }}</el-dropdown-item>
                                     <el-dropdown-item
                                         v-if="avatarDialog.ref.unityPackageUrl"
                                         icon="el-icon-download"
@@ -811,6 +814,9 @@
             case 'Change Image':
                 displayPreviousImages('Change');
                 break;
+            case 'Set Local Image':
+                selectLocalAvatarImage(D.id);
+                break;
             case 'Previous Images':
                 displayPreviousImages('Display');
                 break;
@@ -1050,6 +1056,23 @@
                 });
                 return args;
             });
+    }
+
+    async function selectLocalAvatarImage(id) {
+        let filePath = '';
+        // eslint-disable-next-line no-undef
+        if (LINUX) {
+            filePath = await window.electron.openFileDialog();
+        } else {
+            filePath = await AppApi.OpenFileSelectorDialog(null, '.png', 'PNG Files (*.png)|*.png');
+        }
+        if (!filePath) {
+            return;
+        }
+        const savedPath = await AppApi.SaveAvatarPreviewImage(filePath, id);
+        if (savedPath) {
+            localAvatarImage.value = `file://${savedPath.replace(/\\/g, '/')}`;
+        }
     }
 
     function promptChangeAvatarDescription(avatar) {

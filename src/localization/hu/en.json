@@ -792,6 +792,7 @@
                 "change_description": "Change Description",
                 "change_content_tags": "Change Content Tags",
                 "change_image": "Change Image",
+                "set_local_image": "Set Local Image",
                 "download_package": "Download Unity Package",
                 "delete": "Törlés",
                 "delete_impostor": "Delete Impostor",
