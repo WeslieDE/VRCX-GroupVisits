@@ -10,14 +10,14 @@
                 <el-popover placement="right" width="500px" trigger="click">
                     <img
                         slot="reference"
-                        v-lazy="avatarDialog.ref.thumbnailImageUrl"
+                        v-lazy="localAvatarImage || avatarDialog.ref.thumbnailImageUrl"
                         class="x-link"
                         style="flex: none; width: 160px; height: 120px; border-radius: 12px" />
                     <img
-                        v-lazy="avatarDialog.ref.imageUrl"
+                        v-lazy="localAvatarImage || avatarDialog.ref.imageUrl"
                         class="x-link"
                         style="width: 500px; height: 375px"
-                        @click="showFullscreenImageDialog(avatarDialog.ref.imageUrl)" />
+                        @click="showFullscreenImageDialog(localAvatarImage || avatarDialog.ref.imageUrl)" />
                 </el-popover>
                 <div style="flex: 1; display: flex; align-items: center; margin-left: 15px">
                     <div style="flex: 1">
@@ -661,6 +661,7 @@
     const previousImagesFileId = ref('');
     const previousImagesDialogVisible = ref(false);
     const previousImagesTable = ref([]);
+    const localAvatarImage = ref('');
 
     const treeData = ref([]);
     const timeSpent = ref(0);
@@ -733,6 +734,25 @@
                 handleDialogOpen();
             }
         }
+    );
+
+    watch(
+        () => props.avatarDialog.id,
+        (newId) => {
+            if (!newId) {
+                localAvatarImage.value = '';
+                return;
+            }
+            AppApi.AvatarImagePath(newId).then((filePath) => {
+                if (newId !== props.avatarDialog.id) return;
+                if (filePath) {
+                    localAvatarImage.value = `file://${filePath.replace(/\\/g, '/')}`;
+                } else {
+                    localAvatarImage.value = '';
+                }
+            });
+        },
+        { immediate: true }
     );
 
     function handleDialogOpen() {
