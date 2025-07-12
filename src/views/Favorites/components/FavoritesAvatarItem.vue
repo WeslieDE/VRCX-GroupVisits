@@ -240,17 +240,3 @@
         }
     };
 </script>
-
-<style scoped>
-/* Enlarge avatar preview on hover */
-.avatar img {
-    transition: transform 0.2s ease-in-out;
-    transform-origin: center;
-}
-
-.avatar:hover img {
-    transform: scale(2);
-    position: relative;
-    z-index: 1;
-}
-</style>
