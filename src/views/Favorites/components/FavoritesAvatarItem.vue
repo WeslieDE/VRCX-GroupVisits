@@ -2,8 +2,16 @@
     <div @click="$emit('click')">
         <div class="x-friend-item">
             <template v-if="isLocalFavorite ? favorite.name : favorite.ref">
-                <div class="avatar">
-                    <img v-lazy="smallThumbnail" />
+                <div
+                    class="avatar"
+                    @mouseenter="adjustPreviewPosition"
+                    @mouseleave="resetPreviewPosition"
+                >
+                    <img
+                        ref="previewImg"
+                        v-lazy="smallThumbnail"
+                        :style="{ top: previewTop + 'px' }"
+                    />
                 </div>
                 <div class="detail">
                     <span class="name" v-text="localFavFakeRef.name"></span>
@@ -155,7 +163,8 @@ export default {
         },
         data() {
             return {
-                localAvatarImage: ''
+                localAvatarImage: '',
+                previewTop: 0
             };
         },
         watch: {
@@ -261,6 +270,30 @@ export default {
             },
             removeLocalAvatarFavorite() {
                 this.$emit('remove-local-avatar-favorite', this.favorite.id, this.group);
+            },
+            adjustPreviewPosition() {
+                this.$nextTick(() => {
+                    const img = this.$refs.previewImg;
+                    if (!img) return;
+                    const container = this.$el.closest('.avatar-preview-list');
+                    if (!container) return;
+                    const containerRect = container.getBoundingClientRect();
+                    const itemRect = this.$el.getBoundingClientRect();
+                    const expandedHeight = 300;
+                    const top = itemRect.top - containerRect.top;
+                    const bottom = top + expandedHeight;
+                    let offset = 0;
+                    if (bottom > containerRect.height) {
+                        offset = containerRect.height - bottom;
+                    }
+                    if (top + offset < 0) {
+                        offset = -top;
+                    }
+                    this.previewTop = offset;
+                });
+            },
+            resetPreviewPosition() {
+                this.previewTop = 0;
             }
         }
     };
