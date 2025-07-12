@@ -268,9 +268,6 @@ export default {
 
 <style scoped>
 /* Enlarge avatar preview on hover */
-.avatar {
-    position: relative;
-}
 .avatar img {
     transition: width 0.2s ease-in-out,
         height 0.2s ease-in-out,
@@ -279,9 +276,7 @@ export default {
 }
 
 .avatar:hover img {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 300px;
     height: 300px;
     border-radius: 0;
