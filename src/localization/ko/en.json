@@ -792,6 +792,7 @@
                 "change_description": "설명 변경",
                 "change_content_tags": "Change Content Tags",
                 "change_image": "이미지 변경",
+                "select_local_image": "Select Local Image",
                 "download_package": "유니티 패키지 다운로드",
                 "delete": "삭제",
                 "delete_impostor": "Delete Impostor",

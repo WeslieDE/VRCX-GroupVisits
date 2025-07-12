@@ -979,6 +979,7 @@
                 "change_content_tags": "Change Content Tags",
                 "change_styles_author_tags": "Change Styles and Author Tags",
                 "change_image": "Change Image",
+                "select_local_image": "Select Local Image",
                 "download_package": "Download Unity Package",
                 "delete": "Delete",
                 "delete_impostor": "Delete Impostor",
