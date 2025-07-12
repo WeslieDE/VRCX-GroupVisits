@@ -960,6 +960,7 @@
                 "change_description": "説明を変更",
                 "change_content_tags": "コンテンツタグを変更",
                 "change_image": "画像を変更",
+                "select_local_image": "Select Local Image",
                 "download_package": "Unity Packageをダウンロード",
                 "delete": "削除",
                 "delete_impostor": "インポスターを削除",
