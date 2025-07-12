@@ -268,15 +268,23 @@ export default {
 
 <style scoped>
 /* Enlarge avatar preview on hover */
+.avatar {
+    position: relative;
+}
 .avatar img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
     transition: width 0.2s ease-in-out,
         height 0.2s ease-in-out,
-        transform 0.2s ease-in-out;
+        border-radius 0.2s ease-in-out;
     transform-origin: center;
 }
 
 .avatar:hover img {
-    position: relative;
     width: 300px;
     height: 300px;
     border-radius: 0;
