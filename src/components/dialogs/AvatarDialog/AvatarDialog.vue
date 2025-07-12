@@ -330,6 +330,9 @@
                                     <el-dropdown-item icon="el-icon-picture-outline" command="Change Image">{{
                                         t('dialog.avatar.actions.change_image')
                                     }}</el-dropdown-item>
+                                    <el-dropdown-item icon="el-icon-picture" command="Set Local Image">{{
+                                        t('dialog.avatar.actions.select_local_image')
+                                    }}</el-dropdown-item>
                                     <el-dropdown-item
                                         v-if="avatarDialog.ref.unityPackageUrl"
                                         icon="el-icon-download"
@@ -810,6 +813,9 @@
                 break;
             case 'Change Image':
                 displayPreviousImages('Change');
+                break;
+            case 'Set Local Image':
+                changeLocalAvatarImage();
                 break;
             case 'Previous Images':
                 displayPreviousImages('Display');
@@ -1392,5 +1398,28 @@
             props.avatarDialog.galleryImages = getAvatarGallery(props.avatarDialog.id);
             return args;
         });
+    }
+
+    async function changeLocalAvatarImage() {
+        let filePath = '';
+        if (LINUX) {
+            filePath = await window.electron.openFileDialog();
+        } else {
+            filePath = await AppApi.OpenFileSelectorDialog('', '.png', 'PNG Files (*.png)|*.png');
+        }
+        if (!filePath) {
+            return;
+        }
+
+        const success = await AppApi.SaveLocalAvatarImage(props.avatarDialog.id, filePath);
+        if (success) {
+            const dest = await AppApi.AvatarImagePath(props.avatarDialog.id);
+            if (dest) {
+                localAvatarImage.value = `file://${dest.replace(/\\/g, '/')}`;
+            }
+            $message({ message: 'Local preview updated', type: 'success' });
+        } else {
+            $message({ message: 'Failed to save image', type: 'error' });
+        }
     }
 </script>
