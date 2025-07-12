@@ -290,6 +290,6 @@ export default {
     border-radius: 0;
     mask-image: none;
     transform: none;
-    z-index: 10;
+    z-index: 100;
 }
 </style>
