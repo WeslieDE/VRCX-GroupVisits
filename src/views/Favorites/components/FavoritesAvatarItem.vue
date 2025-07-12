@@ -269,13 +269,19 @@ export default {
 <style scoped>
 /* Enlarge avatar preview on hover */
 .avatar img {
-    transition: transform 0.2s ease-in-out;
+    transition: width 0.2s ease-in-out,
+        height 0.2s ease-in-out,
+        transform 0.2s ease-in-out;
     transform-origin: center;
 }
 
 .avatar:hover img {
-    transform: scale(2);
     position: relative;
-    z-index: 1;
+    width: 300px;
+    height: 300px;
+    border-radius: 0;
+    mask-image: none;
+    transform: none;
+    z-index: 10;
 }
 </style>
