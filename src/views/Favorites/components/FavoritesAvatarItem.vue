@@ -2,8 +2,16 @@
     <div @click="$emit('click')">
         <div class="x-friend-item">
             <template v-if="isLocalFavorite ? favorite.name : favorite.ref">
-                <div class="avatar">
-                    <img v-lazy="smallThumbnail" />
+                <div
+                    class="avatar"
+                    @mouseenter="adjustPreviewPosition"
+                    @mouseleave="resetPreviewPosition"
+                >
+                    <img
+                        ref="previewImg"
+                        v-lazy="smallThumbnail"
+                        :style="{ top: previewTop + 'px' }"
+                    />
                 </div>
                 <div class="detail">
                     <span class="name" v-text="localFavFakeRef.name"></span>
@@ -142,16 +150,41 @@
 <script>
     import { favoriteRequest } from '../../../api';
 
-    export default {
-        name: 'FavoritesAvatarItem',
-        inject: ['API', 'showFavoriteDialog'],
-        props: {
-            favorite: Object,
+export default {
+    name: 'FavoritesAvatarItem',
+    inject: ['API', 'showFavoriteDialog'],
+    props: {
+        favorite: Object,
             group: [Object, String],
             editFavoritesMode: Boolean,
             shiftHeld: Boolean,
             hideTooltips: Boolean,
             isLocalFavorite: Boolean
+        },
+        data() {
+            return {
+                localAvatarImage: '',
+                previewTop: 0
+            };
+        },
+        watch: {
+            'favorite.id': {
+                immediate: true,
+                handler(newId) {
+                    if (!newId) {
+                        this.localAvatarImage = '';
+                        return;
+                    }
+                    AppApi.AvatarImagePath(newId).then((filePath) => {
+                        if (newId !== this.favorite.id) return;
+                        if (filePath) {
+                            this.localAvatarImage = `file://${filePath.replace(/\\/g, '/')}`;
+                        } else {
+                            this.localAvatarImage = '';
+                        }
+                    });
+                }
+            }
         },
         computed: {
             isSelected: {
@@ -171,6 +204,7 @@
             },
             smallThumbnail() {
                 return (
+                    this.localAvatarImage ||
                     this.localFavFakeRef.thumbnailImageUrl.replace('256', '128') ||
                     this.localFavFakeRef.thumbnailImageUrl
                 );
@@ -236,7 +270,59 @@
             },
             removeLocalAvatarFavorite() {
                 this.$emit('remove-local-avatar-favorite', this.favorite.id, this.group);
+            },
+            adjustPreviewPosition() {
+                this.$nextTick(() => {
+                    const img = this.$refs.previewImg;
+                    if (!img) return;
+                    const container = this.$el.closest('.avatar-preview-list');
+                    if (!container) return;
+                    const containerRect = container.getBoundingClientRect();
+                    const itemRect = this.$el.getBoundingClientRect();
+                    const expandedHeight = 300;
+                    const top = itemRect.top - containerRect.top;
+                    const bottom = top + expandedHeight;
+                    let offset = 0;
+                    if (bottom > containerRect.height) {
+                        offset = containerRect.height - bottom;
+                    }
+                    if (top + offset < 0) {
+                        offset = -top;
+                    }
+                    this.previewTop = offset;
+                });
+            },
+            resetPreviewPosition() {
+                this.previewTop = 0;
             }
         }
     };
 </script>
+
+<style scoped>
+/* Enlarge avatar preview on hover */
+.avatar {
+    position: relative;
+}
+.avatar img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: width 0.2s ease-in-out,
+        height 0.2s ease-in-out,
+        border-radius 0.2s ease-in-out;
+    transform-origin: center;
+}
+
+.avatar:hover img {
+    width: 300px;
+    height: 300px;
+    border-radius: 0;
+    mask-image: none;
+    transform: none;
+    z-index: 100;
+}
+</style>

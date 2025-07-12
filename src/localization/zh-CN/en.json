@@ -963,6 +963,7 @@
                 "change_content_tags": "更改内容标签",
                 "change_styles": "更改风格",
                 "change_image": "更改封面",
+                "select_local_image": "Select Local Image",
                 "download_package": "下载 Unity Package",
                 "delete": "删除",
                 "delete_impostor": "删除模型替身",
