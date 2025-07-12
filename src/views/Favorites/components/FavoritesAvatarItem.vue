@@ -142,16 +142,40 @@
 <script>
     import { favoriteRequest } from '../../../api';
 
-    export default {
-        name: 'FavoritesAvatarItem',
-        inject: ['API', 'showFavoriteDialog'],
-        props: {
-            favorite: Object,
+export default {
+    name: 'FavoritesAvatarItem',
+    inject: ['API', 'showFavoriteDialog'],
+    props: {
+        favorite: Object,
             group: [Object, String],
             editFavoritesMode: Boolean,
             shiftHeld: Boolean,
             hideTooltips: Boolean,
             isLocalFavorite: Boolean
+        },
+        data() {
+            return {
+                localAvatarImage: ''
+            };
+        },
+        watch: {
+            'favorite.id': {
+                immediate: true,
+                handler(newId) {
+                    if (!newId) {
+                        this.localAvatarImage = '';
+                        return;
+                    }
+                    AppApi.AvatarImagePath(newId).then((filePath) => {
+                        if (newId !== this.favorite.id) return;
+                        if (filePath) {
+                            this.localAvatarImage = `file://${filePath.replace(/\\/g, '/')}`;
+                        } else {
+                            this.localAvatarImage = '';
+                        }
+                    });
+                }
+            }
         },
         computed: {
             isSelected: {
@@ -171,6 +195,7 @@
             },
             smallThumbnail() {
                 return (
+                    this.localAvatarImage ||
                     this.localFavFakeRef.thumbnailImageUrl.replace('256', '128') ||
                     this.localFavFakeRef.thumbnailImageUrl
                 );
