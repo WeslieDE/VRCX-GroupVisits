@@ -5433,33 +5433,42 @@ console.log(`isLinux: ${LINUX}`);
     };
 
     $app.computed.avatarGalleryAvatars = function () {
-        const avatars = [];
+        const avatarMap = new Map();
+
         for (const fav of this.favoriteAvatars) {
-            if (fav.ref) {
-                const tags = [];
-                if (fav.$groupRef && fav.$groupRef.displayName) {
-                    tags.push(fav.$groupRef.displayName);
-                }
-                avatars.push({
-                    id: fav.ref.id,
+            if (!fav.ref) continue;
+            const id = fav.ref.id;
+            const entry =
+                avatarMap.get(id) || {
+                    id,
                     name: fav.ref.name,
                     thumbnailImageUrl: fav.ref.thumbnailImageUrl,
-                    tags
-                });
+                    tags: []
+                };
+            if (fav.$groupRef && fav.$groupRef.displayName) {
+                const tag = fav.$groupRef.displayName;
+                if (!entry.tags.includes(tag)) entry.tags.push(tag);
             }
+            avatarMap.set(id, entry);
         }
+
         for (const group of this.localAvatarFavoriteGroups) {
             const list = this.localAvatarFavorites[group] || [];
             for (const ref of list) {
-                avatars.push({
-                    id: ref.id,
-                    name: ref.name,
-                    thumbnailImageUrl: ref.thumbnailImageUrl,
-                    tags: [group]
-                });
+                const id = ref.id;
+                const entry =
+                    avatarMap.get(id) || {
+                        id,
+                        name: ref.name,
+                        thumbnailImageUrl: ref.thumbnailImageUrl,
+                        tags: []
+                    };
+                if (!entry.tags.includes(group)) entry.tags.push(group);
+                avatarMap.set(id, entry);
             }
         }
-        return avatars;
+
+        return Array.from(avatarMap.values());
     };
 
     // #endregion
