@@ -239,8 +239,8 @@
                     "click_instance_name": "Click instance name to open Previous Instance Info dialog.",
                     "accuracy_notice": "Info from local database may not be accurate"
                 },
-                "settings": {,
-        "avatar_gallery": "Avatar Gallery"
+                "settings": {
+                    "avatar_gallery": "Avatar Gallery",
                     "header": "Settings",
                     "bar_width": "Bar Width",
                     "show_solo_instance": "Show Solo Instance",
