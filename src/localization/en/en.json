@@ -293,7 +293,7 @@
             "clear_results_tooltip": "Clear results"
         },
         "settings": {,
-        "avatar_gallery": "Avatar Gallery"
+            "avatar_gallery": "Avatar Gallery",
             "header": "Settings",
             "category": {
                 "general": "General",
