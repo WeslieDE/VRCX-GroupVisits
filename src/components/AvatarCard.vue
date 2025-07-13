@@ -5,6 +5,7 @@
             alt="Avatar"
             class="avatar"
             :style="imageStyle"
+            @click="openAvatarDialog"
         />
         <div class="avatar-name">{{ avatar.name }}</div>
     </div>
@@ -13,6 +14,7 @@
 <script>
 export default {
     name: 'AvatarCard',
+    inject: ['showAvatarDialog'],
     props: {
         avatar: {
             type: Object,
@@ -34,6 +36,11 @@ export default {
                 backgroundColor: this.isDarkMode ? '#1e1e1e' : '#f0f0f0'
             };
         }
+    },
+    methods: {
+        openAvatarDialog() {
+            this.showAvatarDialog(this.avatar.id);
+        }
     }
 };
 </script>
@@ -54,6 +61,7 @@ export default {
     border-radius: 8px;
     display: block;
     margin: 0 auto;
+    cursor: pointer;
 }
 .avatar-name {
     margin-top: 12px;
