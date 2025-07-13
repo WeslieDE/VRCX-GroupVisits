@@ -154,6 +154,7 @@ import EditInviteMessageDialog from './views/Profile/dialogs/EditInviteMessageDi
 import ExportAvatarsListDialog from './views/Profile/dialogs/ExportAvatarsListDialog.vue';
 import ExportFriendsListDialog from './views/Profile/dialogs/ExportFriendsListDialog.vue';
 import ProfileTab from './views/Profile/Profile.vue';
+import AvatarGallery from './views/AvatarGallery/AvatarGallery.vue';
 import SearchTab from './views/Search/Search.vue';
 import AvatarProviderDialog from './views/Settings/dialogs/AvatarProviderDialog.vue';
 import ChangelogDialog from './views/Settings/dialogs/ChangelogDialog.vue';
@@ -283,6 +284,7 @@ console.log(`isLinux: ${LINUX}`);
             ChartsTab,
             FriendListTab,
             FavoritesTab,
+            AvatarGallery,
             NotificationTab,
             SearchTab,
             // - others
@@ -5428,6 +5430,36 @@ console.log(`isLinux: ${LINUX}`);
             return this.favoriteAvatars_;
         }
         return this.favoriteAvatarsSorted;
+    };
+
+    $app.computed.avatarGalleryAvatars = function () {
+        const avatars = [];
+        for (const fav of this.favoriteAvatars) {
+            if (fav.ref) {
+                const tags = [];
+                if (fav.$groupRef && fav.$groupRef.displayName) {
+                    tags.push(fav.$groupRef.displayName);
+                }
+                avatars.push({
+                    id: fav.ref.id,
+                    name: fav.ref.name,
+                    thumbnailImageUrl: fav.ref.thumbnailImageUrl,
+                    tags
+                });
+            }
+        }
+        for (const group of this.localAvatarFavoriteGroups) {
+            const list = this.localAvatarFavorites[group] || [];
+            for (const ref of list) {
+                avatars.push({
+                    id: ref.id,
+                    name: ref.name,
+                    thumbnailImageUrl: ref.thumbnailImageUrl,
+                    tags: [group]
+                });
+            }
+        }
+        return avatars;
     };
 
     // #endregion
@@ -13892,6 +13924,13 @@ console.log(`isLinux: ${LINUX}`);
             'new-local-world-favorite-group': this.newLocalWorldFavoriteGroup,
             'rename-local-world-favorite-group':
                 this.renameLocalWorldFavoriteGroup
+        };
+    };
+
+    $app.computed.avatarGalleryTabBind = function () {
+        return {
+            menuActiveIndex: this.menuActiveIndex,
+            galleryAvatars: this.avatarGalleryAvatars
         };
     };
 
