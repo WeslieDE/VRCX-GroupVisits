@@ -40,13 +40,6 @@
             </template>
         </el-menu-item>
 
-        <el-menu-item index="avatarGallery">
-            <i class="el-icon-picture-outline"></i>
-            <template slot="title">
-                <span>{{ $t('nav_tooltip.avatar_gallery') }}</span>
-            </template>
-        </el-menu-item>
-
         <el-menu-item index="friendLog">
             <i class="el-icon-notebook-2"></i>
             <template slot="title">
