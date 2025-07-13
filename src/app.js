@@ -83,6 +83,7 @@ import FeedTab from './views/Feed/Feed.vue';
 import SearchTab from './views/Search/Search.vue';
 import ProfileTab from './views/Profile/Profile.vue';
 import PlayerListTab from './views/PlayerList/PlayerList.vue';
+import AvatarGalleryTab from './views/AvatarGallery/AvatarGallery.vue';
 
 // components
 import SimpleSwitch from './components/SimpleSwitch.vue';
@@ -277,6 +278,7 @@ console.log(`isLinux: ${LINUX}`);
             ChartsTab,
             FriendListTab,
             FavoritesTab,
+            AvatarGalleryTab,
             NotificationTab,
             SearchTab,
             // - others
@@ -13787,6 +13789,15 @@ console.log(`isLinux: ${LINUX}`);
             'new-local-world-favorite-group': this.newLocalWorldFavoriteGroup,
             'rename-local-world-favorite-group':
                 this.renameLocalWorldFavoriteGroup
+        };
+    };
+
+    $app.computed.avatarGalleryTabBind = function () {
+        return {
+            menuActiveIndex: this.menuActiveIndex,
+            favoriteAvatars: this.favoriteAvatars,
+            localAvatarFavoriteGroups: this.localAvatarFavoriteGroups,
+            localAvatarFavorites: this.localAvatarFavorites
         };
     };
 
