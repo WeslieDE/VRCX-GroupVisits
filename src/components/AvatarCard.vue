@@ -1,7 +1,7 @@
 <template>
     <div class="avatar-card" :style="cardStyle">
         <img
-            :src="avatar.thumbnailImageUrl"
+            :src="displayImage"
             alt="Avatar"
             class="avatar"
             :style="imageStyle"
@@ -21,6 +21,11 @@ export default {
             required: true
         }
     },
+    data() {
+        return {
+            localImage: ''
+        };
+    },
     computed: {
         isDarkMode() {
             return this.$root.isDarkMode;
@@ -35,12 +40,22 @@ export default {
             return {
                 backgroundColor: this.isDarkMode ? '#1e1e1e' : '#f0f0f0'
             };
+        },
+        displayImage() {
+            return this.localImage || this.avatar.thumbnailImageUrl;
         }
     },
     methods: {
         openAvatarDialog() {
             this.showAvatarDialog(this.avatar.id);
         }
+    },
+    created() {
+        AppApi.GetLocalAvatarImage(this.avatar.id).then((localPath) => {
+            if (localPath) {
+                this.localImage = `file://${localPath.replace(/\\/g, '/')}`;
+            }
+        });
     }
 };
 </script>
