@@ -10,6 +10,11 @@
                 style="flex: 1">
                 <el-option v-for="tag in allTags" :key="tag" :label="tag" :value="tag" />
             </el-select>
+            <el-input
+                v-model="searchQuery"
+                placeholder="Search name"
+                clearable
+                style="flex: none; width: 150px; margin-left: 10px" />
         </div>
         <div class="avatar-gallery">
             <AvatarCard v-for="avatar in filteredAvatars" :key="avatar.id" :avatar="avatar" />
@@ -29,7 +34,8 @@
         },
         data() {
             return {
-                selectedTags: []
+                selectedTags: [],
+                searchQuery: ''
             };
         },
         computed: {
@@ -46,10 +52,22 @@
                 const tags = Array.isArray(this.selectedTags)
                     ? this.selectedTags
                     : [];
-                if (!tags.length) return this.galleryAvatars;
-                return this.galleryAvatars.filter((a) =>
-                    tags.every((tag) => a.tags && a.tags.includes(tag))
-                );
+                const q = this.searchQuery.toLowerCase().trim();
+                return this.galleryAvatars.filter((a) => {
+                    if (
+                        tags.length &&
+                        !tags.every((tag) => a.tags && a.tags.includes(tag))
+                    ) {
+                        return false;
+                    }
+                    if (
+                        q &&
+                        !(a.name && a.name.toLowerCase().includes(q))
+                    ) {
+                        return false;
+                    }
+                    return true;
+                });
             }
         }
     };
