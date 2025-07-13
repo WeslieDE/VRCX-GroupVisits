@@ -30,7 +30,7 @@
                     @input="searchAvatarFavorites" />
             </div>
         </div>
-        <div class="x-friend-list avatar-preview-list" style="margin-top: 10px">
+        <div class="x-friend-list" style="margin-top: 10px">
             <div
                 v-for="favorite in avatarFavoriteSearchResults"
                 :key="favorite.id"
@@ -59,7 +59,7 @@
             {{ $t('view.favorite.avatars.vrchat_favorites') }}
         </span>
         <el-collapse style="border: 0">
-            <el-collapse-item class="avatar-collapse-item" v-for="group in API.favoriteAvatarGroups" :key="group.name">
+            <el-collapse-item v-for="group in API.favoriteAvatarGroups" :key="group.name">
                 <template slot="title">
                     <span style="font-weight: bold; font-size: 14px; margin-left: 10px" v-text="group.displayName" />
                     <span style="color: #909399; font-size: 12px; margin-left: 10px">
@@ -82,7 +82,7 @@
                             @click.stop="clearFavoriteGroup(group)" />
                     </el-tooltip>
                 </template>
-                <div v-if="group.count" class="x-friend-list avatar-preview-list" style="margin-top: 10px">
+                <div v-if="group.count" class="x-friend-list" style="margin-top: 10px">
                     <FavoritesAvatarItem
                         v-for="favorite in groupedByGroupKeyFavoriteAvatars[group.key]"
                         :key="favorite.id"
@@ -110,7 +110,7 @@
                     <span>No Data</span>
                 </div>
             </el-collapse-item>
-            <el-collapse-item class="avatar-collapse-item">
+            <el-collapse-item>
                 <template slot="title">
                     <span style="font-weight: bold; font-size: 14px; margin-left: 10px">Local History</span>
                     <span style="color: #909399; font-size: 12px; margin-left: 10px"
@@ -125,7 +125,7 @@
                             @click.stop="promptClearAvatarHistory"></el-button>
                     </el-tooltip>
                 </template>
-                <div v-if="avatarHistoryArray.length" class="x-friend-list avatar-preview-list" style="margin-top: 10px">
+                <div v-if="avatarHistoryArray.length" class="x-friend-list" style="margin-top: 10px">
                     <FavoritesAvatarLocalHistoryItem
                         v-for="favorite in avatarHistoryArray"
                         :key="favorite.id"
@@ -164,7 +164,7 @@
                 <i class="el-icon-loading" style="margin-right: 5px"></i>
                 <span>{{ $t('view.favorite.avatars.cancel_refresh') }}</span>
             </el-button>
-            <el-collapse-item class="avatar-collapse-item"
+            <el-collapse-item
                 v-for="group in localAvatarFavoriteGroups"
                 v-if="localAvatarFavorites[group]"
                 :key="group">
@@ -193,7 +193,7 @@
                             @click.stop="promptLocalAvatarFavoriteGroupDelete(group)"></el-button>
                     </el-tooltip>
                 </template>
-                <div v-if="localAvatarFavorites[group].length" class="x-friend-list avatar-preview-list" :style="{ marginTop: '10px' }">
+                <div v-if="localAvatarFavorites[group].length" class="x-friend-list" :style="{ marginTop: '10px' }">
                     <FavoritesAvatarItem
                         v-for="favorite in localAvatarFavorites[group]"
                         :key="favorite.id"
@@ -398,14 +398,3 @@
         }
     };
 </script>
-
-<style scoped>
-.avatar-preview-list {
-    /* override .x-friend-list overflow hidden */
-    overflow: visible !important;
-}
-.avatar-collapse-item >>> .el-collapse-item__wrap,
-.avatar-collapse-item >>> .el-collapse-item__content {
-    overflow: visible;
-}
-</style>
