@@ -907,7 +907,6 @@
                 "change_description": "Changer la description",
                 "change_content_tags": "Modifier les tags",
                 "change_image": "Changer l'image",
-                "select_local_image": "Select Local Image",
                 "download_package": "Télécharger le package Unity",
                 "delete": "Supprimer",
                 "delete_impostor": "Supprimer l'imposteur",

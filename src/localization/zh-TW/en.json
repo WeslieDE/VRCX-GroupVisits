@@ -961,7 +961,6 @@
                 "change_description": "變更敘述",
                 "change_content_tags": "變更世界內容標籤",
                 "change_image": "變更圖片",
-                "select_local_image": "Select Local Image",
                 "download_package": "下載 Unity Package",
                 "delete": "刪除",
                 "delete_impostor": "刪除投影替身",

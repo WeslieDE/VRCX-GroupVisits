@@ -10,14 +10,14 @@
                 <el-popover placement="right" width="500px" trigger="click">
                     <img
                         slot="reference"
-                        v-lazy="localAvatarImage || avatarDialog.ref.thumbnailImageUrl"
+                        v-lazy="avatarDialog.ref.thumbnailImageUrl"
                         class="x-link"
                         style="flex: none; width: 160px; height: 120px; border-radius: 12px" />
                     <img
-                        v-lazy="localAvatarImage || avatarDialog.ref.imageUrl"
+                        v-lazy="avatarDialog.ref.imageUrl"
                         class="x-link"
                         style="width: 500px; height: 375px"
-                        @click="showFullscreenImageDialog(localAvatarImage || avatarDialog.ref.imageUrl)" />
+                        @click="showFullscreenImageDialog(avatarDialog.ref.imageUrl)" />
                 </el-popover>
                 <div style="flex: 1; display: flex; align-items: center; margin-left: 15px">
                     <div style="flex: 1">
@@ -329,9 +329,6 @@
                                     }}</el-dropdown-item>
                                     <el-dropdown-item icon="el-icon-picture-outline" command="Change Image">{{
                                         t('dialog.avatar.actions.change_image')
-                                    }}</el-dropdown-item>
-                                    <el-dropdown-item icon="el-icon-picture" command="Set Local Image">{{
-                                        t('dialog.avatar.actions.select_local_image')
                                     }}</el-dropdown-item>
                                     <el-dropdown-item
                                         v-if="avatarDialog.ref.unityPackageUrl"
@@ -664,7 +661,6 @@
     const previousImagesFileId = ref('');
     const previousImagesDialogVisible = ref(false);
     const previousImagesTable = ref([]);
-    const localAvatarImage = ref('');
 
     const treeData = ref([]);
     const timeSpent = ref(0);
@@ -739,25 +735,6 @@
         }
     );
 
-    watch(
-        () => props.avatarDialog.id,
-        (newId) => {
-            if (!newId) {
-                localAvatarImage.value = '';
-                return;
-            }
-            AppApi.AvatarImagePath(newId).then((filePath) => {
-                if (newId !== props.avatarDialog.id) return;
-                if (filePath) {
-                    localAvatarImage.value = `file://${filePath.replace(/\\/g, '/')}`;
-                } else {
-                    localAvatarImage.value = '';
-                }
-            });
-        },
-        { immediate: true }
-    );
-
     function handleDialogOpen() {
         fileAnalysis.value = {};
         memo.value = '';
@@ -813,9 +790,6 @@
                 break;
             case 'Change Image':
                 displayPreviousImages('Change');
-                break;
-            case 'Set Local Image':
-                changeLocalAvatarImage();
                 break;
             case 'Previous Images':
                 displayPreviousImages('Display');
@@ -1398,28 +1372,5 @@
             props.avatarDialog.galleryImages = getAvatarGallery(props.avatarDialog.id);
             return args;
         });
-    }
-
-    async function changeLocalAvatarImage() {
-        let filePath = '';
-        if (LINUX) {
-            filePath = await window.electron.openFileDialog();
-        } else {
-            filePath = await AppApi.OpenFileSelectorDialog('', '.png', 'PNG Files (*.png)|*.png');
-        }
-        if (!filePath) {
-            return;
-        }
-
-        const success = await AppApi.SaveLocalAvatarImage(props.avatarDialog.id, filePath);
-        if (success) {
-            const dest = await AppApi.AvatarImagePath(props.avatarDialog.id);
-            if (dest) {
-                localAvatarImage.value = `file://${dest.replace(/\\/g, '/')}`;
-            }
-            $message({ message: 'Local preview updated', type: 'success' });
-        } else {
-            $message({ message: 'Failed to save image', type: 'error' });
-        }
     }
 </script>
