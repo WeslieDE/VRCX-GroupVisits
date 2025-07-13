@@ -13,7 +13,8 @@
         "friend_list": "Friend List",
         "charts": "Charts",
         "profile": "Profile",
-        "settings": "Settings"
+        "settings": "Settings",
+        "avatar_gallery": "Avatar Gallery"
     },
     "view": {
         "login": {
@@ -239,6 +240,7 @@
                     "accuracy_notice": "Info from local database may not be accurate"
                 },
                 "settings": {
+                    "avatar_gallery": "Avatar Gallery",
                     "header": "Settings",
                     "bar_width": "Bar Width",
                     "show_solo_instance": "Show Solo Instance",
@@ -291,6 +293,7 @@
             "clear_results_tooltip": "Clear results"
         },
         "settings": {
+            "avatar_gallery": "Avatar Gallery",
             "header": "Settings",
             "category": {
                 "general": "General",
