@@ -43,9 +43,12 @@
                 return Array.from(set);
             },
             filteredAvatars() {
-                if (!this.selectedTags.length) return this.galleryAvatars;
+                const tags = Array.isArray(this.selectedTags)
+                    ? this.selectedTags
+                    : [];
+                if (!tags.length) return this.galleryAvatars;
                 return this.galleryAvatars.filter((a) =>
-                    this.selectedTags.every((tag) => a.tags && a.tags.includes(tag))
+                    tags.every((tag) => a.tags && a.tags.includes(tag))
                 );
             }
         }
