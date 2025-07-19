@@ -140,6 +140,7 @@
             "visibility_tooltip": "Change Visibility",
             "rename_tooltip": "Rename",
             "clear_tooltip": "Clear",
+            "invite_all_tooltip": "Invite all",
             "delete_tooltip": "Delete",
             "unavailable_tooltip": "Unavailable",
             "private": "Private",
