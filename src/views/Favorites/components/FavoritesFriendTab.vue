@@ -45,6 +45,14 @@
                             style="margin-left: 5px"
                             @click.stop="clearFavoriteGroup(group)"></el-button>
                     </el-tooltip>
+                    <el-tooltip placement="right" :content="$t('view.favorite.invite_all_tooltip')" :disabled="hideTooltips">
+                        <el-button
+                            size="mini"
+                            icon="el-icon-message"
+                            circle
+                            style="margin-left: 5px"
+                            @click.stop="showInviteGroupDialog(group)"></el-button>
+                    </el-tooltip>
                 </template>
                 <div v-if="group.count" class="x-friend-list" style="margin-top: 10px">
                     <FavoritesFriendItem
@@ -73,17 +81,27 @@
         <FriendExportDialog
             :friend-export-dialog-visible.sync="friendExportDialogVisible"
             :favorite-friends="favoriteFriends" />
+        <InviteDialog
+            :invite-dialog="inviteDialog"
+            :vip-friends="vipFriends"
+            :online-friends="onlineFriends"
+            :active-friends="activeFriends"
+            :invite-message-table="inviteMessageTable"
+            :upload-image="uploadImage"
+            @closeInviteDialog="closeInviteDialog" />
     </div>
 </template>
 
 <script>
     import FavoritesFriendItem from './FavoritesFriendItem.vue';
     import FriendExportDialog from '../dialogs/FriendExportDialog.vue';
-    import { favoriteRequest } from '../../../api';
+    import InviteDialog from '../../../components/dialogs/InviteDialog/InviteDialog.vue';
+    import { favoriteRequest, worldRequest } from '../../../api';
+    import { parseLocation, isRealInstance } from '../../../composables/instance/utils';
 
     export default {
         name: 'FavoritesFriendTab',
-        components: { FriendExportDialog, FavoritesFriendItem },
+        components: { FriendExportDialog, FavoritesFriendItem, InviteDialog },
         inject: ['showUserDialog', 'API'],
         props: {
             favoriteFriends: Array,
@@ -94,7 +112,15 @@
         },
         data() {
             return {
-                friendExportDialogVisible: false
+                friendExportDialogVisible: false,
+                inviteDialog: {
+                    visible: false,
+                    loading: false,
+                    worldId: '',
+                    worldName: '',
+                    userIds: [],
+                    friendsInInstance: []
+                }
             };
         },
         computed: {
@@ -105,6 +131,24 @@
                 set(value) {
                     this.$emit('update:sort-favorites', value);
                 }
+            },
+            vipFriends() {
+                return this.API.vipFriends;
+            },
+            onlineFriends() {
+                return this.API.onlineFriends;
+            },
+            activeFriends() {
+                return this.API.activeFriends;
+            },
+            inviteMessageTable() {
+                return this.API.inviteMessageTable;
+            },
+            uploadImage() {
+                return this.API.uploadImage;
+            },
+            lastLocation() {
+                return this.API.lastLocation;
             }
         },
         methods: {
@@ -116,6 +160,46 @@
             },
             saveSortFavoritesOption() {
                 this.$emit('save-sort-favorites-option');
+            },
+
+            closeInviteDialog() {
+                this.inviteDialog.visible = false;
+            },
+
+            showInviteGroupDialog(group) {
+                const current = this.lastLocation.location;
+                if (!isRealInstance(current)) {
+                    return;
+                }
+                if (!this.API.checkCanInvite(current)) {
+                    return;
+                }
+                const L = parseLocation(current);
+                worldRequest
+                    .getCachedWorld({
+                        worldId: L.worldId
+                    })
+                    .then((args) => {
+                        const D = this.inviteDialog;
+                        D.userIds = [];
+                        D.worldId = L.tag;
+                        D.worldName = args.ref.name;
+                        D.friendsInInstance = [];
+                        const friendsInCurrentInstance = this.lastLocation.friendList;
+                        for (const friend of friendsInCurrentInstance.values()) {
+                            const ctx = this.API.friends.get(friend.userId);
+                            if (ctx && ctx.ref) {
+                                D.friendsInInstance.push(ctx);
+                            }
+                        }
+                        const favs = this.groupedByGroupKeyFavoriteFriends[group.key] || [];
+                        for (const fav of favs) {
+                            if (fav.ref && fav.ref.location !== 'offline') {
+                                D.userIds.push(fav.ref.id);
+                            }
+                        }
+                        D.visible = true;
+                    });
             },
 
             clearFavoriteGroup(ctx) {
