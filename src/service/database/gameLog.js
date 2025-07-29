@@ -900,6 +900,21 @@ const gameLog = {
         return data;
     },
 
+    async getLastInstanceByUserId(input) {
+        let location = '';
+        await sqliteService.execute(
+            (row) => {
+                location = row[0];
+            },
+            `SELECT location FROM gamelog_join_leave WHERE user_id = @userId OR display_name = @displayName ORDER BY id DESC LIMIT 1`,
+            {
+                '@userId': input.id,
+                '@displayName': input.displayName
+            }
+        );
+        return location;
+    },
+
     async getPreviousInstancesByWorldId(input) {
         var data = new Map();
         await sqliteService.execute(

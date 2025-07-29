@@ -775,6 +775,7 @@
                 "represented_group": "Represented Group",
                 "bio": "Bio",
                 "last_seen": "Last Seen",
+                "last_seen_instance": "Last Seen Instance",
                 "join_count": "Join Count",
                 "time_together": "Time Together",
                 "play_time": "Play Time",
