@@ -243,6 +243,7 @@ export const useUserStore = defineStore('User', () => {
             joinCount: 0,
             timeSpent: 0,
             lastSeen: '',
+            lastInstance: '',
             avatarModeration: 0,
             previousDisplayNames: [],
             dateFriended: '',
@@ -783,6 +784,7 @@ export const useUserStore = defineStore('User', () => {
             $thumbnailUrl: ''
         };
         D.lastSeen = '';
+        D.lastInstance = '';
         D.joinCount = 0;
         D.timeSpent = 0;
         D.avatarModeration = 0;
@@ -926,6 +928,13 @@ export const useUserStore = defineStore('User', () => {
                                         displayNameMapSorted.keys()
                                     );
                                 });
+                            database
+                                .getLastInstanceByUserId(D.ref)
+                                .then((loc) => {
+                                    if (D.id === userId) {
+                                        D.lastInstance = loc;
+                                    }
+                                });
                             AppApi.GetVRChatUserModeration(
                                 state.currentUser.id,
                                 userId
@@ -945,6 +954,13 @@ export const useUserStore = defineStore('User', () => {
                                         D.lastSeen = ref1.lastSeen;
                                         D.joinCount = ref1.joinCount;
                                         D.timeSpent = ref1.timeSpent;
+                                    }
+                                });
+                            database
+                                .getLastInstanceByUserId(D.ref)
+                                .then((loc) => {
+                                    if (D.id === userId) {
+                                        D.lastInstance = loc;
                                     }
                                 });
                         }

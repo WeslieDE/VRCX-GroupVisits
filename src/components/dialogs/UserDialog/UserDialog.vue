@@ -593,6 +593,18 @@
                                     :location="userDialog.ref.location"
                                     :traveling="userDialog.ref.travelingToLocation"
                                     style="display: block; margin-top: 5px" />
+                                <div
+                                    v-if="userDialog.lastInstance"
+                                    class="x-friend-item"
+                                    style="width: 100%; cursor: default; margin-top: 5px">
+                                    <div class="detail">
+                                        <span class="name">{{ t('dialog.user.info.last_seen_instance') }}</span>
+                                        <Location
+                                            class="extra"
+                                            :location="userDialog.lastInstance"
+                                            style="display: inline-block; margin-left: 5px" />
+                                    </div>
+                                </div>
                             </div>
                             <div class="x-friend-list" style="flex: 1; margin-top: 10px; max-height: 150px">
                                 <div
