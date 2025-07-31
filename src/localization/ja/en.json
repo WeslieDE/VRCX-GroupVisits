@@ -1545,6 +1545,7 @@
             "actions": "アクション",
             "kick": "キック",
             "ban": "BAN",
+            "ban_blocked": "Ban Blocked",
             "unban": "BAN解除",
             "save_note": "ノートを保存",
             "delete_sent_invite": "送信した招待を削除",

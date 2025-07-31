@@ -1450,6 +1450,7 @@
             "actions": "Actions",
             "kick": "Expulser",
             "ban": "Bannir",
+            "ban_blocked": "Ban Blocked",
             "unban": "Débannir",
             "save_note": "Sauvegarder la note",
             "delete_sent_invite": "Supprimer l'invitation envoyée",

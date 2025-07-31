@@ -1513,6 +1513,7 @@
             "actions": "操作",
             "kick": "踢出",
             "ban": "封禁",
+            "ban_blocked": "Ban Blocked",
             "unban": "解除封禁",
             "save_note": "儲存備註",
             "delete_sent_invite": "刪除已傳送的邀請",

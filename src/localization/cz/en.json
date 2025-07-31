@@ -1387,6 +1387,7 @@
             "actions": "Actions",
             "kick": "Kick",
             "ban": "Ban",
+            "ban_blocked": "Ban Blocked",
             "unban": "Unban",
             "save_note": "Save Note",
             "delete_sent_invite": "Delete Sent Invite",

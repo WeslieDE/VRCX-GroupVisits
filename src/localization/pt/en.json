@@ -1327,6 +1327,7 @@
             "actions": "Ações",
             "kick": "Remover",
             "ban": "Banir",
+            "ban_blocked": "Ban Blocked",
             "unban": "Desbanir",
             "save_note": "Salvar Nota",
             "delete_sent_invite": "Excluir Convite Enviado",

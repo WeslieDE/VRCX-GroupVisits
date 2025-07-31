@@ -58,6 +58,19 @@ const moderation = {
                 '@user_id': userId
             }
         );
+    },
+
+    async getBlockedUsers() {
+        const result = [];
+        await sqliteService.execute(
+            (dbRow) => {
+                if (dbRow[3] === 1) {
+                    result.push(dbRow[0]);
+                }
+            },
+            `SELECT * FROM ${dbVars.userPrefix}_moderation WHERE block = 1`
+        );
+        return result;
     }
 };
 

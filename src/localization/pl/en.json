@@ -1327,6 +1327,7 @@
             "actions": "Akcje",
             "kick": "Wyrzuć",
             "ban": "Zbanuj",
+            "ban_blocked": "Ban Blocked",
             "unban": "Odbanuj",
             "save_note": "Zapisz notatkę",
             "delete_sent_invite": "Usuń wysłane zaproszenie",

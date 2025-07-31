@@ -791,6 +791,11 @@
             >
             <el-button
                 :disabled="Boolean(progressCurrent || !hasGroupPermission(groupDialog.ref, 'group-bans-manage'))"
+                @click="banBlockedUsers"
+                >{{ t('dialog.group_member_moderation.ban_blocked') }}</el-button
+            >
+            <el-button
+                :disabled="Boolean(progressCurrent || !hasGroupPermission(groupDialog.ref, 'group-bans-manage'))"
                 @click="groupMembersUnban"
                 >{{ t('dialog.group_member_moderation.unban') }}</el-button
             >
@@ -816,7 +821,9 @@
     import { groupDialogFilterOptions, groupDialogSortingOptions } from '../../../shared/constants';
     import { hasGroupPermission, userImage, userImageFull, formatDateFilter } from '../../../shared/utils';
     import { useAppearanceSettingsStore, useGalleryStore, useGroupStore, useUserStore } from '../../../stores';
-    import GroupMemberModerationExportDialog from './GroupMemberModerationExportDialog.vue';
+import GroupMemberModerationExportDialog from './GroupMemberModerationExportDialog.vue';
+import { database } from '../../../service/database';
+import * as workerTimers from 'worker-timers';
 
     const { randomUserColours } = storeToRefs(useAppearanceSettingsStore());
     const { showUserDialog } = useUserStore();
@@ -1193,6 +1200,38 @@
         progressTotal.value = 0;
         getAllGroupBans(D.id);
         deselectedUsers(null, true);
+    }
+
+    async function banBlockedUsers() {
+        const D = props.groupMemberModeration;
+        await getAllGroupBans(D.id);
+        const bannedIds = new Set(groupBansModerationTable.data.map((b) => b.userId));
+        const blocked = await database.getBlockedUsers();
+        const targets = blocked.filter((id) => !bannedIds.has(id));
+        const count = targets.length;
+        progressTotal.value = count;
+        for (let i = 0; i < count; i++) {
+            if (!progressTotal.value) break;
+            const userId = targets[i];
+            progressCurrent.value = i + 1;
+            if (userId === currentUser.value.id) continue;
+            console.log(`Banning blocked user ${userId} ${i + 1}/${count}`);
+            try {
+                await groupRequest.banGroupMember({ groupId: D.id, userId });
+            } catch (err) {
+                console.error(err);
+                $message({ message: `Failed to ban group member: ${err}`, type: 'error' });
+            }
+            await new Promise((resolve) => {
+                workerTimers.setTimeout(resolve, 2000);
+            });
+        }
+        if (count > 0) {
+            $message({ message: `Banned ${count} blocked users`, type: 'success' });
+        }
+        progressCurrent.value = 0;
+        progressTotal.value = 0;
+        getAllGroupBans(D.id);
     }
 
     async function groupMembersUnban() {
