@@ -1526,6 +1526,7 @@
             "actions": "操作",
             "kick": "踢出",
             "ban": "封禁",
+            "ban_blocked": "Ban Blocked",
             "unban": "解除封禁",
             "save_note": "保存备注",
             "delete_sent_invite": "删除已发送的邀请",

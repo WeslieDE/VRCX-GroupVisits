@@ -1513,6 +1513,7 @@
             "actions": "Действия",
             "kick": "Кик",
             "ban": "Бан",
+            "ban_blocked": "Ban Blocked",
             "unban": "Разбанить",
             "save_note": "Сохранить заметку",
             "delete_sent_invite": "Удалить отправленное приглашение",
